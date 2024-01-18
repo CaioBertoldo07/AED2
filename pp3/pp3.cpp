@@ -60,7 +60,7 @@ void Neuron_blocks::add_synapse_sub(Neurons u, Neurons v, Weight w){
 }
 
 // Classe que dará origem ao grafo principal(cérebro)
-class Brain {
+class Brain  {
     private:
         unsigned int num_blocks; // Quantidade de blocos de neurônios(vértices(subgrafos))
         unsigned int num_synapses; // Quantidade de sinapses(arestas)
@@ -183,4 +183,49 @@ void MinHeap::insert_key(int k){
         swap(heap_array[i], heap_array[parent(i)]);
         i = parent(i);
     }
+}
+
+/*template<typename T>
+class Queue {
+    private:
+        list<T> lst;
+    
+    public:
+        bool is_empty();
+        void enqueue(T item);
+        T dequeue();
+        list<T> get_list() {return lst;}
+};
+
+template<typename T>
+bool Queue<T>::is_empty(){
+    if(lst.empty()){
+        return true;
+    } else{
+        return false;
+    }
+}
+
+template<typename T>
+void Queue<T>::enqueue(T item){
+    lst.push_back(item);
+}
+
+template<typename T>
+T Queue<T>::dequeue(){
+    T front = lst.front();
+    lst.pop_front();
+    return front;
+}*/
+
+int main(int argc, char const *argv[]){
+
+    unsigned int num_vertices = 0;
+    unsigned int num_edges = 0;
+
+    cin >> num_vertices >> num_edges;
+    Brain g {num_vertices};
+
+    
+    return 0;
 }
