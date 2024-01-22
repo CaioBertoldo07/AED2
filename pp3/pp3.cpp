@@ -5,7 +5,7 @@
 using namespace std;
 
 typedef unsigned int Neurons;
-typedef Neuron_blocks Block; // No cérebro(grafo principal), os vértices serão de blocos de neurônios(subgrafos) 
+//typedef Neuron_blocks Block; // No cérebro(grafo principal), os vértices serão de blocos de neurônios(subgrafos) 
 typedef float Weight;
 
 // Classe VertexWeightPair para os subgrafos(blocos de neurônios)
@@ -17,12 +17,12 @@ class VertexWeightPair_sub {
 };
 
 // Classe VertexWeightPair para o grafo(cérebro)
-class VertexWeightPair_brain {
+/*class VertexWeightPair_brain {
     public:
         Block block;
         Weight weight;
         VertexWeightPair_brain(Block block, Weight weight): block(block), weight(weight) {}
-};
+};*/
 
 // Classe que dará origem aos subgrafos(blocos de neurônios) que são vértices do grafo principal
 class Neuron_blocks {
@@ -185,7 +185,7 @@ void MinHeap::insert_key(int k){
     }
 }
 
-/*template<typename T>
+template<typename T>
 class Queue {
     private:
         list<T> lst;
@@ -216,16 +216,55 @@ T Queue<T>::dequeue(){
     T front = lst.front();
     lst.pop_front();
     return front;
-}*/
+}
 
-int main(int argc, char const *argv[]){
+void input_brain(Brain &g, unsigned int num_synapses){
+    Block u = 0, v = 0;
+    Weight w = 0;
+    for(unsigned int i = 0; i < num_synapses; i++){
+        cin >> u >> v >> w;
+        g.add_synapse(u, v, w);
+    }
+}
 
-    unsigned int num_vertices = 0;
-    unsigned int num_edges = 0;
+void input_Neuron_blocks(Neuron_blocks &g, unsigned int num_synapses){
+    Neurons u = 0, v = 0;
+    Weight w = 0;
+    for(unsigned int i = 0; i < num_synapses; i++){
+        cin >> u >> v >> w;
+        g.add_synapse_sub(u, v, w);
+    }
+}
 
-    cin >> num_vertices >> num_edges;
-    Brain g {num_vertices};
+int main(){
 
-    
+    unsigned int num_blocks = 0; // número de blocos de neurônios(vértices do cérebro)
+    unsigned int num_synapses = 0; // número de sinapses(arestas do grafo cérebro)
+ 
+    unsigned int num_neurons = 0; // número de neurônios do bloco de neurônios
+    unsigned int num_synapses_sub = 0; // número de sinapses em um bloco de neurônios
+    unsigned int qtd_sick_neurons = 0; // quantidade de neurônios doentes em um bloco
+
+    list<unsigned int>* sick_neurons; // lista que vai conter os neurônios doentes
+    sick_neurons = new list<unsigned int>[qtd_sick_neurons];
+
+    unsigned int sick_neuron = 0; // neurônio doente de determinado bloco 
+
+    cin >> num_blocks >> num_synapses;
+    Brain brain {num_synapses};
+    input_brain(brain, num_synapses);
+    for(unsigned int i = 0; i < num_blocks; i++){
+        cin >> num_neurons >> num_synapses_sub;
+        cin >> qtd_sick_neurons;
+        if(qtd_sick_neurons > 0){
+            for(unsigned int j = 0; j < qtd_sick_neurons; j++){
+                cin >> sick_neuron;
+                sick_neurons[j].push_back(sick_neuron);
+            }
+        }
+        Neuron_blocks n {num_neurons};
+        input_Neuron_blocks(n, num_synapses_sub);
+        cout << "\n-------------\n";
+    }
     return 0;
 }
