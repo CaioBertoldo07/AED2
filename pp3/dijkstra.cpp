@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <list>
 #include <vector>
@@ -52,6 +53,8 @@ WeightedDigraphAL::~WeightedDigraphAL(){
 void WeightedDigraphAL::add_edge(Vertex u, Vertex v, Weight w){
     VertexWeightPair itemV{v, w};
     adj[u].push_back(itemV);
+    VertexWeightPair itemU{u, w};
+    adj[v].push_back(itemU);
     num_edges++;
 }
 
@@ -60,11 +63,11 @@ void WeightedDigraphAL::add_edge(Vertex u, Vertex v, Weight w){
 template<typename T>
 class MinHeap{
     private:
-        T* heap_array;
+        T heap_array[max];
         int capacity;
-        int heap_size;
+        int heap_size = 0;
     public:
-        MinHeap(int);
+       // MinHeap(int);
         void MinHeapfy(int);
         int parent(int i) {return i/2;}
         int left(int i) {return 2*i;}
@@ -77,19 +80,19 @@ class MinHeap{
         void print_heap();
 };
 
-template<typename T>
-MinHeap<T>::MinHeap(int capacity){
-    this->capacity = capacity;
-    this->heap_array = new T[capacity];
-    this->heap_size = 0;
-}
+// template<typename T>
+// MinHeap<T>::MinHeap(int capacity){
+//     this->capacity = capacity;
+//     this->heap_array = new T[capacity];
+//     this->heap_size = 0;
+// }
 
 template<typename T>
 void MinHeap<T>::MinHeapfy(int i){
     int l = left(i);
     int r = right(i);
 
-    int smallest = 0;
+    int smallest;
     if(l <= heap_size && heap_array[l] < heap_array[i]){
         smallest = l;
     }else {
@@ -106,7 +109,7 @@ void MinHeap<T>::MinHeapfy(int i){
 
 template<typename T>
 void MinHeap<T>::Build_heapfy(){
-    for(int i = heap_size / 2; i--;){
+    for(int i = heap_size / 2; i > 0; i--){
         MinHeapfy(i);
     }
 }
@@ -117,6 +120,7 @@ T MinHeap<T>::extractMin(){
     heap_array[0] = heap_array[heap_size - 1];
     heap_size--;
     MinHeapfy(0);
+    //cout << "Extraiu";
     return x; 
 }
 
@@ -143,19 +147,21 @@ void MinHeap<T>::print_heap(){
 }
 
 void WeightedDigraphAL::Dijkstra(int s){
-    MinHeap<Vertex> queue{max};
-    vector<float> distance(num_vertices);
+    MinHeap<Vertex> queue;
+    vector<Weight> distance(num_vertices);
     vector<Vertex> predecessor(num_vertices);
+    //cout << "Beleza" << endl;
     for(unsigned int i = 0; i < num_vertices; i++){
         distance[i] = inf;
-        predecessor[i] = null;
+        predecessor[i] = -1;
     }
+    //cout << "Beleza 2";
     distance[s] = 0;
     queue.insert(s);
     while(!queue.isEmpty()){
         Vertex u = queue.extractMin();
-        
-        for(auto v: adj[u]){
+        //cout << "Vertex extraido " << u;
+        for(VertexWeightPair v: adj[u]){
             if(distance[v.vertex] > distance[u] + v.weight){
                 distance[v.vertex] = distance[u] + v.weight;
                 predecessor[v.vertex] = u;
@@ -163,9 +169,13 @@ void WeightedDigraphAL::Dijkstra(int s){
             }
         }
     }
-    cout << num_vertices;
+    cout << num_vertices << endl;
     for(unsigned int i = 0; i < num_vertices; i++){
-        cout << distance[i] << " ";
+        cout << "Distancia de " << i << ": " << distance[i] << endl;
+    }
+
+    for(unsigned int i = 0; i < num_vertices; i++){
+        cout << "Predecessor de " << i << ": " << predecessor[i] << endl;
     }
 }
 
@@ -178,13 +188,29 @@ void input_graph(WeightedDigraphAL &g, unsigned int num_edges){
     }
 }
 
+void display_list(list<VertexWeightPair> lst){
+    for(VertexWeightPair itemVertex: lst){
+        cout << "(" << itemVertex.vertex << ", " << itemVertex.weight << ")";
+    }
+    cout << endl;
+}
+
+void display_graph(WeightedDigraphAL &g){
+    for(unsigned int v = 0; v < g.get_num_vertices(); v++){
+        cout << v << ": ";
+        list<VertexWeightPair> lst = g.get_adj(v);
+        display_list(lst);
+    }
+}
+
 int main(){
     unsigned int num_edges = 0, num_vertices = 0;
     unsigned int entrance = 0, exit = 0;
     cin >> num_vertices >> num_edges;
-    WeightedDigraphAL g{num_vertices};
+    WeightedDigraphAL g{num_vertices + 1};
     input_graph(g, num_edges);
     cin >> entrance >> exit;
-    g.Dijkstra(0);
+    g.Dijkstra(1);
+    //display_graph(g);
     return 0;
 }

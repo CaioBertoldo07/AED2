@@ -69,6 +69,7 @@ T MinHeap<T>::extractMin(){
     heap_array[0] = heap_array[heap_size - 1];
     heap_size--;
     MinHeapfy(0);
+    cout << "Extraiu";
     return x; 
 }
 
