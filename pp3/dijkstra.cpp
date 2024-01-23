@@ -33,7 +33,7 @@ class WeightedDigraphAL {
         unsigned int get_num_vertices() {return num_vertices;}
         unsigned int get_num_edges() {return num_edges;}
         list<VertexWeightPair> get_adj(Vertex v) {return adj[v];}
-        void Dijkstra(int);
+        void Dijkstra(int, int);
        // void relax(vector<float>);
 };
 
@@ -146,7 +146,7 @@ void MinHeap<T>::print_heap(){
     }
 }
 
-void WeightedDigraphAL::Dijkstra(int s){
+void WeightedDigraphAL::Dijkstra(int origin, int destiny){
     MinHeap<Vertex> queue;
     vector<Weight> distance(num_vertices);
     vector<Vertex> predecessor(num_vertices);
@@ -156,8 +156,8 @@ void WeightedDigraphAL::Dijkstra(int s){
         predecessor[i] = -1;
     }
     //cout << "Beleza 2";
-    distance[s] = 0;
-    queue.insert(s);
+    distance[origin] = 0;
+    queue.insert(origin);
     while(!queue.isEmpty()){
         Vertex u = queue.extractMin();
         //cout << "Vertex extraido " << u;
@@ -169,6 +169,18 @@ void WeightedDigraphAL::Dijkstra(int s){
             }
         }
     }
+    vector<Vertex> path;
+    path.push_back(destiny);
+    Vertex v = destiny;
+    while(v != origin){
+        v = predecessor[v];
+        path.push_back(v);
+    }
+    cout << "Caminho: ";
+    for(auto i: path){
+        cout << i << " ";
+    }
+    cout << endl;
     cout << num_vertices << endl;
     for(unsigned int i = 0; i < num_vertices; i++){
         cout << "Distancia de " << i << ": " << distance[i] << endl;
@@ -210,7 +222,7 @@ int main(){
     WeightedDigraphAL g{num_vertices + 1};
     input_graph(g, num_edges);
     cin >> entrance >> exit;
-    g.Dijkstra(1);
+    g.Dijkstra(entrance,exit);
     //display_graph(g);
     return 0;
 }
