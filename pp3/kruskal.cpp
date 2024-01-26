@@ -56,7 +56,7 @@ class Graph {
         unsigned int get_num_vertices() {return num_vertices;}
         vector<pair<pair<unsigned int,unsigned int>,float>> get_graph() {return graph;}
         vector<pair<pair<unsigned int,unsigned int>,float>> get_mst() {return mst;}
-        void Mst_Kruskal();
+        int Mst_Kruskal();
         // Bubble sort
         void bubble_sort(vector<pair<pair<unsigned int, unsigned int>, float>>);
         void display_mst();
@@ -80,7 +80,7 @@ Graph::~Graph(){
     graph.clear();
     mst.clear();
     //delete [] parent;
-    num_vertices = 0;
+    num_vertices = num_edges = 0;
 }
 
 void Graph::add_edge(unsigned int u, unsigned int v, float w){
@@ -92,7 +92,7 @@ void Graph::add_edge(unsigned int u, unsigned int v, float w){
 }
 
 void Graph::bubble_sort(vector<pair<pair<unsigned int, unsigned int>, float>> g){
-    pair<pair<unsigned int, unsigned int>, float> aux;
+   // pair<pair<unsigned int, unsigned int>, float> aux;
     for(unsigned int i = 0; i < g.size(); i++){
         for(unsigned int j = 0; j < g.size() - i - 1; j++){
             if(g[j].second > g[j + 1].second){
@@ -102,35 +102,48 @@ void Graph::bubble_sort(vector<pair<pair<unsigned int, unsigned int>, float>> g)
     }
 }
 
-void Graph::Mst_Kruskal(){
+int Graph::Mst_Kruskal(){
     UnionFind u{num_vertices};
     u.make_set();
     bubble_sort(graph);
+    int sum = 0;
 
     for(unsigned int i = 0; i < graph.size(); i++){
         if(u.find_set(graph[i].first.first) != u.find_set(graph[i].first.second)){
             mst.push_back(graph[i]);
             u.Union(graph[i].first.first, graph[i].first.second);
-            //cout<< "teste " << mst[i].first.first<<endl;
+            //cout << "teste " << mst[i].first.first<<endl;
         }
     }
+    for(unsigned int i = 0; i < mst.size(); i++){
+        sum += mst[i].second;
+    }
+    return sum;
     //cout <<"size: "<< mst.size()<<endl;
 }
 
-
+void input_graph(Graph &g, unsigned int num_edges){
+    unsigned int u = 0, v = 0;
+    unsigned int w = 0;
+    //pair<pair<unsigned int, unsigned int>,float> edge;
+    for(unsigned int i = 0; i < num_edges; i++){
+        cin >> u >> v >> w;
+        g.add_edge(u, v, w);
+    }
+    
+}
 
 int main(){
 
-    Graph g{6};
-    g.add_edge(0, 1, 0.5);
-    g.add_edge(0, 2, 0.12);
-    g.add_edge(1, 4, 0.2);
-    g.add_edge(1, 3, 0.9);
-    g.add_edge(2, 3, 0.1);
-    g.add_edge(2, 5, 0.9);
-    g.add_edge(3, 5, 0.7);
-    g.add_edge(4, 3, 0.3);
+    unsigned int num_vertices = 0;
+    unsigned int num_edges = 0;
+
+    cin >> num_vertices >> num_edges;
+    Graph g{num_vertices};
+    input_graph(g, num_edges);
+
     g.Mst_Kruskal();
     g.display_mst();
+    // cout << "Soma: " << g.Mst_Kruskal();
     return 0;
 }

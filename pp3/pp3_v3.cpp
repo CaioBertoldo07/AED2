@@ -284,6 +284,43 @@ void input_graph(WeightGraphAL &g, unsigned int num_edges){
     }
 }
 
+class UnionFind {
+    private:
+        unsigned int *parent;
+        unsigned int num_vertices;
+    public:
+        UnionFind(unsigned int);
+        int find_set(unsigned int);
+        void make_set();
+        void Union(int, int);
+        
+};
+
+UnionFind::UnionFind(unsigned int num_vertices): num_vertices(num_vertices){
+    parent = new unsigned int[num_vertices];
+}
+
+int UnionFind::find_set(unsigned int x){
+    if(parent[x] == x){
+        return x;
+    } else{
+        return find_set(parent[x]);
+    }
+}
+
+void UnionFind::make_set(){
+    for(unsigned int i = 0; i < num_vertices; i++){
+        parent[i] = i;
+    }
+}
+
+void UnionFind::Union(int x, int y){
+    x = find_set(x);
+    y = find_set(y);
+    if(x != y){
+        parent[y] = x;
+    }
+}
 
 
 int main(){
